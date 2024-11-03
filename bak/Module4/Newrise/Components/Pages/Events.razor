@@ -1,0 +1,80 @@
+﻿@page "/events"
+@using EventModel = Newrise.Shared.Models.Event;
+@inject EventDataService EventDataService
+@inject IDialogService DialogService
+
+<PageTitle>@(Program.AppName + " - Event Listing")</PageTitle>
+<MudGrid>
+	<MudItem Class="ma-8" xs="12">
+		<MudText Typo="Typo.h5">List of Events</MudText><br />
+		<MudTable Items=Items Bordered Striped RowsPerPage="10" Filter=EventFilter>
+			<ToolBarContent>
+				<MudButton Variant=Variant.Filled Color=Color.Primary
+					Href="/events/create">ADD EVENT</MudButton>
+				<MudSpacer />
+				<MudTextField @bind-Value=SearchText Placeholder="Search"
+					Adornment=Adornment.Start AdornmentIcon=@Icons.Material.Filled.Search
+					IconSize=Size.Medium Immediate />
+			</ToolBarContent>
+			<HeaderContent>
+				<MudTh>
+					<MudTableSortLabel SortBy=@(new Func<EventModel,object>(x => x.Id))>ID</MudTableSortLabel>
+				</MudTh>
+				<MudTh>Type</MudTh>
+				<MudTh>
+					<MudTh>
+						<MudTableSortLabel SortBy=@(new Func<EventModel,object>(x => x.Title))>Title</MudTableSortLabel>
+					</MudTh>
+				</MudTh>
+				<MudTh>From</MudTh>
+				<MudTh>Hours</MudTh>
+				<MudTh>Seats</MudTh>
+				<MudTh>
+					<MudTableSortLabel
+						InitialDirection="SortDirection.Descending"
+						SortBy=@(new Func<EventModel,object>(x => x.Fee))>Fee</MudTableSortLabel>
+
+				</MudTh>
+			</HeaderContent>
+			<RowTemplate>
+				<MudTd DataLabel="ID">@context.Id</MudTd>
+				<MudTd DataLabel="Type">@context.Type</MudTd>
+				<MudTd DataLabel="Title">
+					<MudLink OnClick=@(()=>ShowDetails(@context))>@context.Title</MudLink>
+				</MudTd>
+				<MudTd DataLabel="From">@context.From</MudTd>
+				<MudTd DataLabel="Hours">@context.Hours</MudTd>
+				<MudTd DataLabel="Seats">@context.Seats</MudTd>
+				<MudTd DataLabel="Fee">@context.Fee</MudTd>
+			</RowTemplate>
+			<PagerContent>
+				<MudTablePager />
+			</PagerContent>
+		</MudTable>
+	</MudItem>
+</MudGrid>
+@code {
+	string SearchText { get; set; } = string.Empty;
+	List<EventModel> Items { get; set; } = new List<EventModel>();
+	bool EventFilter(EventModel item) {
+		return string.Concat(item.Id, item.Type, item.Title)
+			.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase);
+	}
+	protected override async Task OnInitializedAsync() {
+		Items = await EventDataService.GetEventsAsync();
+	}
+
+	async void OnEventDeletedAsync(EventModel item) {
+		Items = await EventDataService.GetEventsAsync();
+		StateHasChanged();
+	}
+
+	void ShowDetails(EventModel item) {
+		var parameters = new DialogParameters();
+		parameters.Add("Event", item);
+		parameters.Add("EventDeleted", new Action<EventModel>(OnEventDeletedAsync));
+		DialogService.Show<EventDetails>(null, parameters);
+	}
+
+
+}
