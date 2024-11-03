@@ -1,0 +1,7 @@
+﻿@page "/events"
+@inject NavigationManager Navigation
+<PageTitle>@(Program.AppName + "/Events")</PageTitle>
+<MudText Typo=Typo.h5>Events</MudText>
+<MudButton Variant=Variant.Filled Color=Color.Primary
+	OnClick=@(e=>Navigation.NavigateTo("/events/create"))
+	Href="/events/create">ADD EVENT</MudButton>

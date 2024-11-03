@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "QESnSWk1xrOX92SfxfXl42c11QC95fOXp/L4RIWeoXM=",
+  "Source": "Newrise.Shared",
+  "BasePath": "_content/Newrise.Shared",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Newrise.Shared\\wwwroot",
+      "Source": "Newrise.Shared",
+      "ContentRoot": "E:\\Training\\ASP520\\src\\Module2\\Newrise.Shared\\wwwroot\\",
+      "BasePath": "_content/Newrise.Shared",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}

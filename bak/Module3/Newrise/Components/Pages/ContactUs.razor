@@ -1,0 +1,42 @@
+﻿@page "/contact"
+@inject OfficeListProvider OfficeListProvider;
+<PageTitle>@(Program.AppName + "/Contact Us")</PageTitle>
+<MudGrid>
+	<MudItem xs="12">
+		<MudText Class="mt-4" Typo=Typo.h5 Align=Align.Center>Contact Us</MudText>
+	</MudItem>
+	@foreach (var office in offices) {
+		<MudItem xs="12" md="6" xl="3">
+			<MudPaper Class="ma-4 pa-4">
+				<MudText Typo=@Typo.h6 Align=Align.Center>@office.Id</MudText>
+				<MudDivider />
+				<MudText Typo=Typo.overline>ADDRESS</MudText>
+				<MudText Typo=Typo.body1>@office.Address1</MudText>
+				<MudText Typo=Typo.body1>@office.Address2</MudText>
+				<MudText Typo=Typo.body1>@office.Address3</MudText>
+				<br />
+				<MudText Typo=Typo.overline>CONTACT</MudText>
+				<MudText Typo=Typo.body1>
+					<MudIcon Icon=@Icons.Material.Filled.Email />
+					<span class="icon-text">@office.Email</span>
+				</MudText>
+				<MudText Typo=Typo.body1>
+					<MudIcon Icon=@Icons.Material.Filled.Phone />
+					<span class="icon-text">@office.Tel</span>
+				</MudText>
+				<MudText Typo=Typo.body1>
+					<MudIcon Icon=@Icons.Material.Filled.Smartphone />
+					<span class="icon-text">@office.Mobile</span>
+				</MudText>
+			</MudPaper>
+		</MudItem>
+	}
+</MudGrid>
+
+@code {
+	List<Office> offices;
+
+	protected override void OnInitialized() {
+		offices = OfficeListProvider.GetList();
+	}
+}

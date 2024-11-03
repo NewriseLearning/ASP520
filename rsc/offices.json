@@ -1,0 +1,20 @@
+[
+	{
+		"Id" : "Penang (mainland) office",
+		"Address1" : "484B, 2nd Floor, Jalan Permatang Rawa,",
+		"Address2" : "Bandar Perda, Bukit Mertajam,",
+		"Address3" : "14000, Penang, Malaysia.",
+		"Email" : "info@newrise.com.my",
+		"Tel" : "604-6042307",
+		"Mobile" : "016-4422957"
+	},
+	{
+		"Id" : "Penang (island) office",
+		"Address1" : "2-3-11, Bangunan Lip Sin,",
+		"Address2" : "Lebuh Pekaka 1, Sungai Dua,",
+		"Address3" : "11700 Gelugor, Penang, Malaysia.",
+		"Email" : "info@newrise.com.my",
+		"Tel" : "604-6042308",
+		"Mobile" : "012-4186092"
+	}
+]

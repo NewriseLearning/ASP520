@@ -1,0 +1,101 @@
+﻿@page "/events/create"
+@inject EventDataService EventDataService
+@inject ISnackbar Snackbar
+<PageTitle>@(Program.AppName + " - New Event")</PageTitle>
+<EditForm Model=Item
+	 OnInvalidSubmit=@(()=>ValidationFailed=true)
+	 OnValidSubmit=HandleSubmitAsync>
+	<DataAnnotationsValidator />
+	<MudGrid>
+		<MudItem xs="12">
+			@if (IsSubmitting) {
+				<MudAlert Severity=Severity.Info>
+					<MudText>Attempting to add event. Please wait.</MudText>
+					<MudProgressCircular Color=Color.Inherit Indeterminate />
+				</MudAlert>
+			}
+			else {
+			<MudCard Class="ma-4 pa-4">
+				<MudCardContent>
+					<MudText Typo="Typo.h5">New Event</MudText><br />
+					<MudStack Row="true">
+						<MudTextField Label="ID *" @ref=Id @bind-Value=Item.Id MaxLength=6
+							For=@(() => Item.Id) AutoFocus /><br />
+						<MudSelect T=EventType Label="EVENT TYPE *" AnchorOrigin=Origin.BottomCenter
+							@bind-Value=Item.Type For=@(()=>Item.Type)>
+							<MudSelectItem T=EventType Value=EventType.Presentation />
+							<MudSelectItem T=EventType Value=EventType.Training />
+							<MudSelectItem T=EventType Value=EventType.Workshop />
+							<MudSelectItem T=EventType Value=EventType.Forum />
+						</MudSelect>
+						<MudCheckBox Class="pt-4" Label="Available Online" @bind-Value=Item.Online />
+					</MudStack><br />
+					<MudTextField Label="TITLE *" @bind-Value=Item.Title MaxLength=50
+								  For=@(() => Item.Title) /><br />
+					<MudTextField Label="DESCRIPTION" @bind-Value=Item.Description MaxLength=1000
+								  For=@(()=>Item.Description) Lines=5 /><br />
+					<MudStack Row=true>
+						<MudDatePicker Label="START DATE" @bind-Date=Item.FromDate />
+						<MudTimePicker Label="START TIME" @bind-Time=Item.FromTime />
+					</MudStack><br />
+					<MudStack Row=true>
+						<MudNumericField Label="HOURS" @bind-Value=Item.Hours
+										 Min=0.5 Max=8.0 Step=1.0 For=@(()=>Item.Hours) />
+						<MudNumericField Label="SEATS" @bind-Value=Item.Seats
+										 Min=1 Max=200 Step=10 For=@(()=>Item.Seats) />
+						<MudNumericField Label="FEE" @bind-Value=Item.Fee
+										 Min=0 Max=5000 Step=100 For=@(()=>Item.Fee) />
+					</MudStack><br />
+					@if (Success != string.Empty) {
+						<MudAlert Severity=Severity.Success>@Success</MudAlert>
+						<br />
+					}
+					@if (Failure != string.Empty) {
+						<MudAlert Severity=Severity.Error>@Failure</MudAlert>
+						<br />
+					}
+					@if (ValidationFailed) {
+						<MudAlert Severity="Severity.Error"><ValidationSummary /></MudAlert>
+					}
+				</MudCardContent>
+				<MudCardActions>
+					<MudButton Disabled=IsSubmitting Color=Color.Primary Variant=Variant.Filled
+							   ButtonType=ButtonType.Submit>SAVE</MudButton>
+					<MudButton Disabled=IsSubmitting Class="ml-2" Color=Color.Primary Variant=Variant.Filled
+							   Href="/events">VIEW EVENTS</MudButton>
+				</MudCardActions>
+			</MudCard>
+			}
+		</MudItem>
+	</MudGrid>
+</EditForm>
+
+@code {
+	MudTextField<string> Id;
+	bool IsSubmitting { get; set; }
+	bool ValidationFailed { get; set; }
+	string Success { get; set; } = string.Empty;
+	string Failure { get; set; } = string.Empty;
+	NewEvent Item { get; set; } = new NewEvent { From = DateTime.Now };
+	async void HandleSubmitAsync() {
+		try {
+			IsSubmitting = true;
+			ValidationFailed = false;
+			Success = string.Empty;
+			Failure = string.Empty;
+			await Task.Delay(4000);
+			await EventDataService.AddEventAsync(Item);
+			Success = $"Event {Item.Id} added successfully";
+			Snackbar.Add(Success, Severity.Success);
+			Item = new NewEvent { From = DateTime.Now };
+		} catch (Exception ex) {
+			Failure = $"{ex.Message} Cannot add event.";
+			Snackbar.Add(Failure, Severity.Error);
+		}
+		finally {
+			IsSubmitting = false;
+			await Id.FocusAsync();
+			StateHasChanged();
+		}
+	}
+}

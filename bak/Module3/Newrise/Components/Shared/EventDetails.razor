@@ -1,0 +1,74 @@
+﻿@inject EventDataService EventDataService
+@inject ISnackbar Snackbar
+<MudDialog>
+	<TitleContent>
+		<MudText Typo=@Typo.h5>Event Details</MudText>
+		<MudDivider />
+	</TitleContent>
+	<DialogContent>
+		<MudStack Row=true>
+			<MudSpacer />
+			@if (Event.Online) { <MudChip T=string Color=Color.Info>ONLINE</MudChip> }
+		</MudStack>
+
+		<MudStack Row=true>
+			<MudTextField Label="ID" Value=Event.Id ReadOnly />
+			<MudTextField FullWidth Label="TITLE" Value=Event.Title ReadOnly />
+		</MudStack><br />
+
+		<MudStack Row=@true>
+			<MudTextField Label="TYPE" Value=Event.Type ReadOnly />
+			<MudTextField Label="FROM" Value=Event.From ReadOnly />
+			<MudTextField Label="HOURS" Value=Event.Hours ReadOnly />
+		</MudStack><br />
+
+
+		@if (!string.IsNullOrEmpty(Event.Description)) {
+			<MudTextField Label="DESCRIPTION" Value=Event.Description Lines=5 ReadOnly /><br />
+		}
+
+		<MudStack Row=@true>
+			<MudTextField Label="SEATS" Value=Event.Seats ReadOnly />
+			<MudTextField Label="ALLOCATED SEATS" Value=Event.AllocatedSeats ReadOnly />
+			<MudTextField Label="REMAINING SEATS" Value=Event.RemainingSeats ReadOnly />
+		</MudStack><br />
+
+		@if (Event.Fee != 0) {
+			<MudTextField Label="FEE"
+						  Value=Event.Fee ReadOnly />
+			<br />
+		}
+
+	</DialogContent>
+	<DialogActions>
+		@if (IsProcessing) {
+			<MudAlert Severity=Severity.Info>Deleting event. Please wait.</MudAlert>
+		} else {
+			<MudSpacer />
+			<MudButton Color=Color.Error Variant=Variant.Filled
+					   OnClick=DeleteEventAsync>DELETE</MudButton>
+		}
+	</DialogActions>
+</MudDialog>
+
+@code {
+	[CascadingParameter] MudDialogInstance MudDialog { get; set; }
+	[Parameter] public Event Event { get; set; }
+	[Parameter] public Action<Event> EventDeleted { get; set; }
+	bool IsProcessing { get; set; }
+
+	async Task DeleteEventAsync() {
+		try {
+			IsProcessing = true;
+			await EventDataService.RemoveEventAsync(Event.Id);
+			Snackbar.Add($"Event '{Event.Id}' deleted.", Severity.Success);
+			EventDeleted?.Invoke(Event);
+		}
+		catch (Exception) {
+			Snackbar.Add($"Cannot delete event '{Event.Id}'.", Severity.Error);
+		}
+		finally {
+			MudDialog.Close();
+		}
+	}
+}

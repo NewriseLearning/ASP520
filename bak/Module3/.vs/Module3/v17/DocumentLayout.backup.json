@@ -1,0 +1,186 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Training\\ASP520\\src\\Module3\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|e:\\training\\asp520\\src\\module3\\newrise\\components\\shared\\eventdetails.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|solutionrelative:newrise\\components\\shared\\eventdetails.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|e:\\training\\asp520\\src\\module3\\newrise\\components\\pages\\events.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|solutionrelative:newrise\\components\\pages\\events.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|e:\\training\\asp520\\src\\module3\\newrise\\components\\layout\\defaultlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|solutionrelative:newrise\\components\\layout\\defaultlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|e:\\training\\asp520\\src\\module3\\newrise\\services\\eventdataservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|solutionrelative:newrise\\services\\eventdataservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|e:\\training\\asp520\\src\\module3\\newrise\\components\\_imports.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|solutionrelative:newrise\\components\\_imports.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|e:\\training\\asp520\\src\\module3\\newrise\\components\\pages\\event\\create.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D87A9383-7135-4248-8F71-CEA9626C9724}|Newrise\\Newrise.csproj|solutionrelative:newrise\\components\\pages\\event\\create.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E61E0D0-C231-44F5-99E5-B961AC482CA1}|Newrise.Shared\\Newrise.Shared.csproj|e:\\training\\asp520\\src\\module3\\newrise.shared\\models\\logininfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0E61E0D0-C231-44F5-99E5-B961AC482CA1}|Newrise.Shared\\Newrise.Shared.csproj|solutionrelative:newrise.shared\\models\\logininfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E61E0D0-C231-44F5-99E5-B961AC482CA1}|Newrise.Shared\\Newrise.Shared.csproj|e:\\training\\asp520\\src\\module3\\newrise.shared\\models\\participant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0E61E0D0-C231-44F5-99E5-B961AC482CA1}|Newrise.Shared\\Newrise.Shared.csproj|solutionrelative:newrise.shared\\models\\participant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E61E0D0-C231-44F5-99E5-B961AC482CA1}|Newrise.Shared\\Newrise.Shared.csproj|e:\\training\\asp520\\src\\module3\\newrise.shared\\models\\newevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0E61E0D0-C231-44F5-99E5-B961AC482CA1}|Newrise.Shared\\Newrise.Shared.csproj|solutionrelative:newrise.shared\\models\\newevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E61E0D0-C231-44F5-99E5-B961AC482CA1}|Newrise.Shared\\Newrise.Shared.csproj|e:\\training\\asp520\\src\\module3\\newrise.shared\\models\\newparticipant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0E61E0D0-C231-44F5-99E5-B961AC482CA1}|Newrise.Shared\\Newrise.Shared.csproj|solutionrelative:newrise.shared\\models\\newparticipant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "_Imports.razor",
+              "DocumentMoniker": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Components\\_Imports.razor",
+              "RelativeDocumentMoniker": "Newrise\\Components\\_Imports.razor",
+              "ToolTip": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Components\\_Imports.razor",
+              "RelativeToolTip": "Newrise\\Components\\_Imports.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-11-03T18:09:20.298Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EventDetails.razor",
+              "DocumentMoniker": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Components\\Shared\\EventDetails.razor",
+              "RelativeDocumentMoniker": "Newrise\\Components\\Shared\\EventDetails.razor",
+              "ToolTip": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Components\\Shared\\EventDetails.razor",
+              "RelativeToolTip": "Newrise\\Components\\Shared\\EventDetails.razor",
+              "ViewState": "AgIAAD4AAAAAAAAAAAAgwEgAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-11-03T18:03:12.823Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Events.razor",
+              "DocumentMoniker": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Components\\Pages\\Events.razor",
+              "RelativeDocumentMoniker": "Newrise\\Components\\Pages\\Events.razor",
+              "ToolTip": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Components\\Pages\\Events.razor",
+              "RelativeToolTip": "Newrise\\Components\\Pages\\Events.razor",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAE0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-11-03T17:12:42.398Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "EventDataService.cs",
+              "DocumentMoniker": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Services\\EventDataService.cs",
+              "RelativeDocumentMoniker": "Newrise\\Services\\EventDataService.cs",
+              "ToolTip": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Services\\EventDataService.cs",
+              "RelativeToolTip": "Newrise\\Services\\EventDataService.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-03T16:08:33.556Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DefaultLayout.razor",
+              "DocumentMoniker": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Components\\Layout\\DefaultLayout.razor",
+              "RelativeDocumentMoniker": "Newrise\\Components\\Layout\\DefaultLayout.razor",
+              "ToolTip": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Components\\Layout\\DefaultLayout.razor",
+              "RelativeToolTip": "Newrise\\Components\\Layout\\DefaultLayout.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-11-03T15:35:53.713Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Create.razor",
+              "DocumentMoniker": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Components\\Pages\\Event\\Create.razor",
+              "RelativeDocumentMoniker": "Newrise\\Components\\Pages\\Event\\Create.razor",
+              "ToolTip": "E:\\Training\\ASP520\\src\\Module3\\Newrise\\Components\\Pages\\Event\\Create.razor",
+              "RelativeToolTip": "Newrise\\Components\\Pages\\Event\\Create.razor",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAgwF0AAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-11-03T15:03:11.438Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "LoginInfo.cs",
+              "DocumentMoniker": "E:\\Training\\ASP520\\src\\Module3\\Newrise.Shared\\Models\\LoginInfo.cs",
+              "RelativeDocumentMoniker": "Newrise.Shared\\Models\\LoginInfo.cs",
+              "ToolTip": "E:\\Training\\ASP520\\src\\Module3\\Newrise.Shared\\Models\\LoginInfo.cs",
+              "RelativeToolTip": "Newrise.Shared\\Models\\LoginInfo.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAgwBEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-03T14:43:06.22Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "NewParticipant.cs",
+              "DocumentMoniker": "E:\\Training\\ASP520\\src\\Module3\\Newrise.Shared\\Models\\NewParticipant.cs",
+              "RelativeDocumentMoniker": "Newrise.Shared\\Models\\NewParticipant.cs",
+              "ToolTip": "E:\\Training\\ASP520\\src\\Module3\\Newrise.Shared\\Models\\NewParticipant.cs",
+              "RelativeToolTip": "Newrise.Shared\\Models\\NewParticipant.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-03T14:11:32.093Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Participant.cs",
+              "DocumentMoniker": "E:\\Training\\ASP520\\src\\Module3\\Newrise.Shared\\Models\\Participant.cs",
+              "RelativeDocumentMoniker": "Newrise.Shared\\Models\\Participant.cs",
+              "ToolTip": "E:\\Training\\ASP520\\src\\Module3\\Newrise.Shared\\Models\\Participant.cs",
+              "RelativeToolTip": "Newrise.Shared\\Models\\Participant.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAA2wCAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-03T13:51:39.281Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "NewEvent.cs",
+              "DocumentMoniker": "E:\\Training\\ASP520\\src\\Module3\\Newrise.Shared\\Models\\NewEvent.cs",
+              "RelativeDocumentMoniker": "Newrise.Shared\\Models\\NewEvent.cs",
+              "ToolTip": "E:\\Training\\ASP520\\src\\Module3\\Newrise.Shared\\Models\\NewEvent.cs",
+              "RelativeToolTip": "Newrise.Shared\\Models\\NewEvent.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAuwCMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-03T13:09:58.949Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
