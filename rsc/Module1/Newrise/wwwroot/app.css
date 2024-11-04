@@ -1,3 +1,9 @@
+.active-link {
+    text-decoration:none;
+    pointer-events:none;
+    color:gray;
+}
+
 h1:focus {
     outline: none;
 }
