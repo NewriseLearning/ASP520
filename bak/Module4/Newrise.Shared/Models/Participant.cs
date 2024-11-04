@@ -23,6 +23,8 @@ namespace Newrise.Shared.Models {
 
 		public byte[] Photo { get; set; }
 
+		public bool IsAdmin { get; set; }
+
 		[Required]
 		[StringLength(256)]
 		public string PasswordHash { get; set; }

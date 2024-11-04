@@ -9,8 +9,10 @@
 		<MudText Typo="Typo.h5">List of Events</MudText><br />
 		<MudTable Items=Items Bordered Striped RowsPerPage="10" Filter=EventFilter>
 			<ToolBarContent>
-				<MudButton Variant=Variant.Filled Color=Color.Primary
-					Href="/events/create">ADD EVENT</MudButton>
+				<AuthorizeView Roles="admin">
+					<MudButton Variant=Variant.Filled Color=Color.Primary
+						Href="/events/create">ADD EVENT</MudButton>
+				</AuthorizeView>
 				<MudSpacer />
 				<MudTextField @bind-Value=SearchText Placeholder="Search"
 					Adornment=Adornment.Start AdornmentIcon=@Icons.Material.Filled.Search
@@ -69,10 +71,16 @@
 		StateHasChanged();
 	}
 
+	async void OnEventUpdatedAsync(EventModel item) {
+		Items = await EventDataService.GetEventsAsync();
+		StateHasChanged();
+	}
+
 	void ShowDetails(EventModel item) {
 		var parameters = new DialogParameters();
 		parameters.Add("Event", item);
 		parameters.Add("EventDeleted", new Action<EventModel>(OnEventDeletedAsync));
+		parameters.Add("EventUpdated", new Action<EventModel>(OnEventUpdatedAsync));
 		DialogService.Show<EventDetails>(null, parameters);
 	}
 

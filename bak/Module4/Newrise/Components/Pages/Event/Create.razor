@@ -1,5 +1,5 @@
 ﻿@page "/events/create"
-@attribute [Authorize]
+@attribute [Authorize(Roles = "admin")]
 @inject EventDataService EventDataService
 @inject ISnackbar Snackbar
 <PageTitle>@(Program.AppName + " - New Event")</PageTitle>

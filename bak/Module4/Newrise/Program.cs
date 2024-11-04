@@ -21,13 +21,14 @@ namespace Newrise {
 			services.AddMudServices();
 			services.AddSingleton<OfficeListProvider>();
 
+			services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
+			services.AddAuthentication(UserSession.AuthenticationType);
+			services.AddCascadingAuthenticationState();
+
 			var connectionString = "Server=.;Database=NewriseDb;TrustServerCertificate=True;Trusted_Connection=True";
 			services.AddDbContextFactory<NewriseDbContext>(options => options.UseSqlServer(connectionString));
 			builder.Services.AddSingleton<EventDataService>();
-
-			services.AddScoped<ProtectedSessionStorage>();
-			services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
-			services.AddAuthentication(UserSession.AuthenticationType);
+			builder.Services.AddScoped<ParticipantDataService>();
 
 			var app = builder.Build();
 			var env = app.Environment;
@@ -39,10 +40,10 @@ namespace Newrise {
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
 			app.UseAntiforgery();
-			app.UseAuthentication();
-			app.UseAuthorization();
 			app.MapRazorComponents<App>()
 				.AddInteractiveServerRenderMode();
+			app.UseAuthentication();
+			app.UseAuthorization();
 			app.Run();
 		}
 	}

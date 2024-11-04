@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newrise.Services;
 
@@ -11,9 +12,11 @@ using Newrise.Services;
 namespace Newrise.Migrations
 {
     [DbContext(typeof(NewriseDbContext))]
-    partial class NewriseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241104205916_AddAdminRole")]
+    partial class AddAdminRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace Newrise.Migrations
 
                     b.HasIndex("ParticipantsId");
 
-                    b.ToTable("EventParticipant", (string)null);
+                    b.ToTable("EventParticipant");
                 });
 
             modelBuilder.Entity("Newrise.Shared.Models.Event", b =>
@@ -76,7 +79,7 @@ namespace Newrise.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("Newrise.Shared.Models.Participant", b =>
@@ -118,7 +121,7 @@ namespace Newrise.Migrations
 
                     b.HasAlternateKey("Email");
 
-                    b.ToTable("Participants", (string)null);
+                    b.ToTable("Participants");
                 });
 
             modelBuilder.Entity("EventParticipant", b =>

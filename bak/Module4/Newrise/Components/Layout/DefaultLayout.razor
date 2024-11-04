@@ -9,6 +9,17 @@
 		<MudSpacer />
 		<MudText Typo=Typo.h5>@Program.AppName</MudText>
 		<MudSpacer />
+		<AuthorizeView>
+			<Authorized>
+				<MudLink Color=@Color.Inherit Href="/profile">
+					@context.User.Identity?.Name
+				</MudLink>
+			</Authorized>
+			<NotAuthorized>
+				<MudLink Color=Color.Inherit href="/login">Login</MudLink>
+				<MudLink Class="ml-2" Color=Color.Inherit href="/register">Register</MudLink>
+			</NotAuthorized>
+		</AuthorizeView>
 		<MudIconButton Icon=@Icons.Material.Filled.MoreVert Color=Color.Inherit />
 	</MudAppBar>
 	<MudDrawer @bind-Open=drawerOpened ClipMode=DrawerClipMode.Always Elevation=1

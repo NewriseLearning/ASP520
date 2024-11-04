@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MudBlazor;
 using Newrise.Components.Pages.Event;
 using Newrise.Shared.Models;
@@ -8,30 +9,35 @@ using System.Security.Claims;
 
 namespace Newrise.Services {
 	public class ServerAuthenticationStateProvider : AuthenticationStateProvider {
-		
-		private ProtectedSessionStorage _sessionStorage;
-		private readonly ClaimsPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
+		private ProtectedSessionStorage _storage;
 
-		public ServerAuthenticationStateProvider(ProtectedSessionStorage sessionStorage) {
-			_sessionStorage = sessionStorage;
+		private readonly AuthenticationState _anonymous = new AuthenticationState(
+			new ClaimsPrincipal(new ClaimsIdentity()));
+		private AuthenticationState _state;
+
+		public ServerAuthenticationStateProvider(ProtectedSessionStorage storage) {
+			_storage = storage;
 		}
 
 		public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
+			if (_state != null) return _state;
 			try {
-				var result = await _sessionStorage.GetAsync<UserSession>("UserSession");
-				var userSession = result.Success ? result.Value : null;
-				if (userSession == null) return await Task.FromResult(new AuthenticationState(_anonymous));
-				var principal = userSession.GetPrincipal();
-				return await Task.FromResult(new AuthenticationState(principal));
-			} catch {
-				return await Task.FromResult(new AuthenticationState(_anonymous));
-			}
+				var result = await _storage.GetAsync<UserSession>("UserSession");
+				if (result.Success) return _state = new AuthenticationState(
+					result.Value.GetPrincipal());
+				return _anonymous; } catch {
+				return _anonymous; }
 		}
-
-		public async Task UpdateAuthenticationState(UserSession userSession) {
-			if (userSession != null) await _sessionStorage.SetAsync("UserSession", userSession);
-			else await _sessionStorage.DeleteAsync("UserSession");
-			NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+		public async Task UpdateAuthenticationStateAsync(UserSession userSession) {
+			if (userSession == null) {
+				await _storage.DeleteAsync("UserSession");
+				NotifyAuthenticationStateChanged(Task.FromResult(_anonymous));
+			}
+			else {
+				await _storage.SetAsync("UserSession", userSession);
+				_state = new AuthenticationState(userSession.GetPrincipal());
+				NotifyAuthenticationStateChanged(Task.FromResult(_state));
+			}
 		}
 	}
 }

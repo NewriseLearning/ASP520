@@ -54,7 +54,10 @@
 @code {
 	[CascadingParameter] MudDialogInstance MudDialog { get; set; }
 	[Parameter] public Event Event { get; set; }
+
 	[Parameter] public Action<Event> EventDeleted { get; set; }
+	[Parameter] public Action<Event> EventUpdated { get; set; }
+
 	bool IsProcessing { get; set; }
 
 	async Task DeleteEventAsync() {
