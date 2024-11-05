@@ -1,4 +1,6 @@
-﻿<MudDialog>
+﻿@inject EventDataService EventDataService
+@inject ISnackbar Snackbar
+<MudDialog>
 	<TitleContent>
 		<MudText Typo=Typo.h5>Event Details</MudText>
 		<MudDivider />
@@ -34,13 +36,45 @@
 			<br />
 		}
 	</DialogContent>
-	<DialogActions></DialogActions>
+	<DialogActions>
+	@if (IsProcessing) {
+		<MudAlert Severity=Severity.Info>
+			Deleting event. Please wait.
+			</MudAlert>
+		}
+		else {
+			<MudSpacer />
+			<MudButton Color=Color.Error Variant=Variant.Filled
+				OnClick=DeleteEventAsync>DELETE</MudButton>
+		}
+	</DialogActions>
 </MudDialog>
 
 @code {
+	bool IsProcessing { get; set; }
+
+	[Parameter]
+	public Action<Event> EventDeleted { get; set; }
+
 	[CascadingParameter]
 	public MudDialogInstance MudDialog { get; set; }
 
 	[Parameter]
 	public Event Event { get; set; }
+
+	async Task DeleteEventAsync() {
+		try {
+			IsProcessing = true;
+			await EventDataService.RemoveEventAsync(Event.Id);
+			Snackbar.Add($"Event '{Event.Id}' deleted.", Severity.Success);
+			EventDeleted?.Invoke(Event);
+		}
+		catch (Exception ex) {
+			Snackbar.Add($"Cannot delete event '{Event.Id}. {ex.Message}.", Severity.Error);
+		}
+		finally {
+		//	IsProcessing = false;
+			MudDialog.Close();	
+		}
+	}
 }

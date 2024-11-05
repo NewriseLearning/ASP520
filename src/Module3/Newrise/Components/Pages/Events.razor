@@ -59,9 +59,15 @@
 </MudGrid>
 @code {
 
+	async void EventDeletedAsync(EventModel item) {
+		Items = await EventDataService.GetEventsAsync();
+		StateHasChanged();
+	}
+
 	void ShowDetails(EventModel item) {
 		var parameters = new DialogParameters();
 		parameters.Add("Event", item);
+		parameters.Add("EventDeleted", new Action<EventModel>(EventDeletedAsync));
 		DialogService.Show<EventDetails>(null, parameters);
 	}
 
