@@ -23,6 +23,10 @@ namespace Newrise.Shared.Models {
 		public string Email { get; set; }
 		public byte[] Photo { get; set; }
 
+		[Required]
+		[StringLength(256)]
+		public string PasswordHash { get; set; }
+
 		public virtual ICollection<Event> Events { get; set; } = new HashSet<Event>();
 	}
 }

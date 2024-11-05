@@ -16,6 +16,8 @@ namespace Newrise.Services {
 
 		public async Task AddEventAsync(Event item) {
 			using (var dc = await _dcFactory.CreateDbContextAsync()) {
+				if (await dc.Events.FindAsync(item.Id) != null)
+					throw new Exception($"Event with ID '{item.Id}' already exists.");
 				await dc.Events.AddAsync(item);
 				await dc.SaveChangesAsync();
 			}

@@ -1,16 +1,80 @@
 ﻿@page "/events"
-@inject NavigationManager Nav
-<PageTitle>@Program.AppName/Events</PageTitle>
-<MudText Typo=Typo.h5>Events</MudText>
-<MudButton Variant=Variant.Filled Color=Color.Primary
-	Href="/events/create">ADD EVENT</MudButton>
-<MudButton Variant=Variant.Filled Color=Color.Primary
-   OnClick=GotoCreate>ADD EVENT</MudButton>
-<MudButton Variant=Variant.Filled Color=Color.Primary
-   OnClick=@(()=>Nav.NavigateTo("/events/create"))>ADD EVENT</MudButton>
-
+@using EventModel = Newrise.Shared.Models.Event
+@inject EventDataService EventDataService
+@inject IDialogService DialogService
+<PageTitle>@(Program.AppName + " - Event Listing")</PageTitle>
+<MudGrid>
+	<MudItem Class="ma-8" xs="12">
+		<MudText Typo="Typo.h5">List of Events</MudText><br />
+		<MudTable Items=Items Bordered Striped RowsPerPage=10
+			Filter=EventFilter>
+			<ToolBarContent>
+				<MudButton Variant=Variant.Filled Color=Color.Primary
+					Href="/events/create">ADD EVENT</MudButton>
+				<MudSpacer />
+				<MudTextField @bind-Value=SearchText
+					Placeholder="Search"
+					Adornment=Adornment.Start
+					AdornmentIcon=@Icons.Material.Filled.Search
+					IconSize=Size.Medium  Immediate />
+			</ToolBarContent>
+			<HeaderContent>
+				<MudTh>
+					<MudTableSortLabel
+						SortBy=@(new Func<EventModel,object>(x => x.Id))>
+							ID</MudTableSortLabel>
+				</MudTh>
+				<MudTh>Type</MudTh>
+				<MudTh>
+					<MudTableSortLabel
+						SortBy=@(new Func<EventModel,object>(x => string.Concat(x.Type,x.Title)))>
+					Title</MudTableSortLabel>
+				</MudTh>
+				<MudTh>From</MudTh>
+				<MudTh>Hours</MudTh>
+				<MudTh>Seats</MudTh>
+				<MudTh>
+					<MudTableSortLabel
+						InitialDirection=SortDirection.Descending
+						SortBy=@(new Func<EventModel,object>(x => x.Fee))>
+						Fee</MudTableSortLabel>
+				</MudTh>
+			</HeaderContent>
+			<RowTemplate>
+				<MudTd DataLabel="ID">@context.Id</MudTd>
+				<MudTd DataLabel="Type">@context.Type</MudTd>
+				<MudTd DataLabel="Title">
+					<MudLink OnClick=@(()=>ShowDetails(context))>@context.Title</MudLink>
+				</MudTd>
+				<MudTd DataLabel="From">@context.From</MudTd>
+				<MudTd DataLabel="Hours">@context.Hours</MudTd>
+				<MudTd DataLabel="Seats">@context.Seats</MudTd>
+				<MudTd DataLabel="Fee">@(string.Format("{0:N0}",context.Fee))</MudTd>
+			</RowTemplate>
+			<PagerContent>
+				<MudTablePager />
+			</PagerContent>
+		</MudTable>
+	</MudItem>
+</MudGrid>
 @code {
-	void GotoCreate() {
-		Nav.NavigateTo("/events/create");
+
+	void ShowDetails(EventModel item) {
+		var parameters = new DialogParameters();
+		parameters.Add("Event", item);
+		DialogService.Show<EventDetails>(null, parameters);
+	}
+
+	bool EventFilter(EventModel item) {
+		return string
+			.Concat(item.Id, item.Type, item.Title)
+			.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase);
+	}
+
+	string SearchText { get; set; } = string.Empty;
+	List<EventModel> Items { get; set; } = new List<EventModel>();
+
+	protected override async Task OnInitializedAsync() {
+		Items = await EventDataService.GetEventsAsync();
 	}
 }

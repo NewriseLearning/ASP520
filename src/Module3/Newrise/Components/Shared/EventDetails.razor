@@ -1,0 +1,46 @@
+﻿<MudDialog>
+	<TitleContent>
+		<MudText Typo=Typo.h5>Event Details</MudText>
+		<MudDivider />
+	</TitleContent>
+	<DialogContent>
+		<MudStack Row=true>
+			<MudSpacer />
+			@if (Event.Online) {
+				<MudChip T=string Color=Color.Info>ONLINE</MudChip>
+			}
+		</MudStack>
+		<MudStack Row=true>
+			<MudTextField Label="ID" Value=Event.Id ReadOnly />
+			<MudTextField FullWidth Label="TITLE" Value=Event.Title ReadOnly />
+		</MudStack><br />
+		<MudStack Row=@true>
+			<MudTextField Label="TYPE" Value=Event.Type ReadOnly />
+			<MudTextField Label="FROM" Value=Event.From ReadOnly />
+			<MudTextField Label="HOURS" Value=Event.Hours ReadOnly />
+		</MudStack><br />
+		@if (!string.IsNullOrEmpty(Event.Description)) {
+			<MudTextField Label="DESCRIPTION" Value=Event.Description Lines=5 ReadOnly />
+			<br />
+		}
+		<MudStack Row=@true>
+			<MudTextField Label="SEATS" Value=Event.Seats ReadOnly />
+			<MudTextField Label="ALLOCATED SEATS" Value=Event.AllocatedSeats ReadOnly />
+			<MudTextField Label="REMAINING SEATS" Value=Event.RemainingSeats ReadOnly />
+		</MudStack><br />
+		@if (Event.Fee != 0) {
+			<MudTextField Label="FEE"
+				Value=Event.Fee ReadOnly />
+			<br />
+		}
+	</DialogContent>
+	<DialogActions></DialogActions>
+</MudDialog>
+
+@code {
+	[CascadingParameter]
+	public MudDialogInstance MudDialog { get; set; }
+
+	[Parameter]
+	public Event Event { get; set; }
+}

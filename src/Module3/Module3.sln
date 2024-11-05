@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Newrise", "Newrise\Newrise.csproj", "{507B5EAA-515A-4608-9B73-63CE05BBD906}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Newrise.Shared", "Newrise.Shared\Newrise.Shared.csproj", "{79B04069-E77D-4622-8945-9D241BB87088}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Newrise.Shared", "Newrise.Shared\Newrise.Shared.csproj", "{79B04069-E77D-4622-8945-9D241BB87088}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

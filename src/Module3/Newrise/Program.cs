@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 using MudBlazor.Services;
 using Newrise.Components;
 using Newrise.Services;
@@ -13,7 +14,9 @@ namespace Newrise {
 				.AddRazorComponents()
 				.AddInteractiveServerComponents();
 			services.AddMemoryCache();
-			services.AddMudServices();
+			services.AddMudServices(configuration => {
+				configuration.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
+			});
 			services.AddSingleton<OfficeListProvider>();
 
 			var connectionString = builder.Configuration.GetConnectionString("NewriseDb");
