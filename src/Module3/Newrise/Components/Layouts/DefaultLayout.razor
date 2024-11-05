@@ -1,0 +1,46 @@
+﻿@inherits LayoutComponentBase
+<MudThemeProvider />
+<MudLayout>
+	<MudAppBar Dense Elevation=2>
+		<MudIconButton Icon=@Icons.Material.Filled.Menu Color=Color.Inherit
+			OnClick=ToggleDrawer />
+		<MudSpacer />
+		<MudText Typo=Typo.h5>@Program.AppName</MudText>
+		<MudSpacer />
+		<MudIconButton Icon=@Icons.Material.Filled.MoreVert Color=Color.Inherit	/>
+	</MudAppBar>
+	<MudDrawer @bind-Open=drawerOpened Variant=DrawerVariant.Temporary OverlayAutoClose ClipMode=DrawerClipMode.Always Elevation=1>
+		<MudImage Src="/images/newrise-logo.png" Alt="Newrise Logo"
+			ObjectFit=ObjectFit.ScaleDown ObjectPosition=ObjectPosition.Center />
+		<MudNavMenu>
+			<MudNavLink Href="/" Match=@NavLinkMatch.All>Home</MudNavLink>
+			<MudNavLink Href="/events">Events</MudNavLink>
+			<MudNavLink Href="/contact">Contact Us</MudNavLink>
+			<MudNavGroup Title="MudBlazor" Expanded>
+				<MudNavLink Target="_blank"
+					Href="https://mudblazor.com/">
+					Home
+				</MudNavLink>
+				<MudNavLink Target="_blank"
+					Href="https://mudblazor.com/features/icons#icons">
+					Icons
+				</MudNavLink>
+				<MudNavLink Target="_blank"
+					Href="https://mudblazor.com/features/colors#theme-palette-colors">
+					Colors
+				</MudNavLink>
+				<MudNavLink Target="_blank"
+					Href="https://mudblazor.com/features/breakpoints#breakpoints">
+					Breakpoints
+				</MudNavLink>
+			</MudNavGroup>
+		</MudNavMenu>
+	</MudDrawer>
+	<MudMainContent>@Body</MudMainContent>
+</MudLayout>
+@code {
+	bool drawerOpened;
+	void ToggleDrawer() {
+		drawerOpened = !drawerOpened;
+	}
+}
