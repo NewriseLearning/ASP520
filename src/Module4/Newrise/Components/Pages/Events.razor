@@ -50,7 +50,9 @@
 				</MudTd>
 				<MudTd DataLabel="From">@context.From</MudTd>
 				<MudTd DataLabel="Hours">@context.Hours</MudTd>
-				<MudTd DataLabel="Seats">@context.Seats</MudTd>
+				<MudTd DataLabel="Seats">
+					@context.RemainingSeats/@context.Seats
+					</MudTd>
 				<MudTd DataLabel="Fee">@(string.Format("{0:N0}",context.Fee))</MudTd>
 			</RowTemplate>
 			<PagerContent>
@@ -61,7 +63,12 @@
 </MudGrid>
 @code {
 
-	async void EventDeletedAsync(EventModel item) {
+	// async void EventDeletedAsync(EventModel item) {
+	// 	Items = await EventDataService.GetEventsAsync();
+	// 	StateHasChanged();
+	// }
+
+	async void EventUpdatedAsync(EventModel item) {
 		Items = await EventDataService.GetEventsAsync();
 		StateHasChanged();
 	}
@@ -69,7 +76,9 @@
 	void ShowDetails(EventModel item) {
 		var parameters = new DialogParameters();
 		parameters.Add("Event", item);
-		parameters.Add("EventDeleted", new Action<EventModel>(EventDeletedAsync));
+		var eventUpdated = new Action<EventModel>(EventUpdatedAsync);
+		parameters.Add("EventDeleted", eventUpdated);
+		parameters.Add("EventUpdated", eventUpdated);
 		DialogService.Show<EventDetails>(null, parameters);
 	}
 

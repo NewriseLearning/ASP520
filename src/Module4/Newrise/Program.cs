@@ -18,6 +18,7 @@ namespace Newrise {
 				ServerAuthenticationStateProvider>();
 			services.AddAuthentication(UserSession.AuthenticationType);
 			services.AddCascadingAuthenticationState();
+
 			services
 				.AddRazorComponents()
 				.AddInteractiveServerComponents();
@@ -32,6 +33,7 @@ namespace Newrise {
 				options => options.UseSqlServer(connectionString));
 
 			services.AddSingleton<EventDataService>();
+			services.AddScoped<ParticipantDataService>();
 
 			var app = builder.Build();
 			var env = app.Environment;

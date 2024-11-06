@@ -1,4 +1,6 @@
-﻿@inject EventDataService EventDataService
+﻿@using System.Security.Claims
+@inject EventDataService EventDataService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
 <MudDialog>
 	<TitleContent>
@@ -10,6 +12,14 @@
 			<MudSpacer />
 			@if (Event.Online) {
 				<MudChip T=string Color=Color.Info>ONLINE</MudChip>
+			}
+			@if (Event.RemainingSeats == 0) {
+				<MudChip T=string Color=Color.Info>FULL</MudChip>
+			}
+			@if (IsParticipating) {
+				<MudChip T=string Color=Color.Secondary>
+					PARTICIPATING
+				</MudChip>
 			}
 		</MudStack>
 		<MudStack Row=true>
@@ -39,28 +49,90 @@
 	<DialogActions>
 	@if (IsProcessing) {
 		<MudAlert Severity=Severity.Info>
-			Deleting event. Please wait.
+			Updating event. Please wait.
 			</MudAlert>
 		}
 		else {
-			<MudSpacer />
-			<MudButton Color=Color.Error Variant=Variant.Filled
-				OnClick=DeleteEventAsync>DELETE</MudButton>
+			<AuthorizeView>
+				@if (IsParticipating) {
+					<MudButton Color=Color.Primary Variant=Variant.Filled
+						OnClick=LeaveEventAsync>LEAVE EVENT</MudButton>
+				}
+				else {
+					<MudButton Color=Color.Primary Variant=Variant.Filled
+					   OnClick=ParticipateEventAsync>PARTICIPATE EVENT</MudButton>
+				}
+			</AuthorizeView>
+			<AuthorizeView Roles="admin">
+				<MudSpacer />
+				<MudButton Color=Color.Error Variant=Variant.Filled
+					OnClick=DeleteEventAsync>DELETE</MudButton>
+			</AuthorizeView>
 		}
 	</DialogActions>
 </MudDialog>
 
 @code {
+
+	ClaimsPrincipal User { get; set; }
+	bool IsParticipating { get; set; }
+
+	async Task ParticipateEventAsync() {
+		try {
+			IsProcessing = true;
+			await EventDataService.AddParticipantAsync(Event.Id, User.Identity.Name);
+			Snackbar.Add($"Participation in event '{Event.Id}' confirmed.", Severity.Success);
+			Event = await EventDataService.GetEventAsync(Event.Id);
+			IsParticipating = true; EventUpdated?.Invoke(Event);
+		}
+		catch (Exception ex) { Snackbar.Add(ex.Message, Severity.Error); }
+		finally {
+			IsProcessing = false;
+			//	MudDialog.Close();
+		}
+	}
+
+	async Task LeaveEventAsync() {
+		try {
+			IsProcessing = true;
+			await EventDataService.RemoveParticipantAsync(Event.Id, User.Identity.Name);
+			Snackbar.Add($"Your '{Event.Id}' event participation is cancelled.", Severity.Success);
+			Event = await EventDataService.GetEventAsync(Event.Id);
+			IsParticipating = false; EventUpdated?.Invoke(Event);
+		}
+		catch (Exception ex) { Snackbar.Add(ex.Message, Severity.Error); }
+		finally {
+			IsProcessing = false;
+			//	MudDialog.Close();
+		}
+	}
+	protected override async Task OnInitializedAsync() {
+		var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		if (state != null) User = state.User;
+	}
+
 	bool IsProcessing { get; set; }
 
 	[Parameter]
 	public Action<Event> EventDeleted { get; set; }
+
+	[Parameter]
+	public Action<Event> EventUpdated { get; set; }
 
 	[CascadingParameter]
 	public MudDialogInstance MudDialog { get; set; }
 
 	[Parameter]
 	public Event Event { get; set; }
+
+	protected override async Task OnParametersSetAsync() {
+		if (User != null && Event != null) {
+			IsParticipating = await EventDataService
+				.HasParticipantAsync(Event.Id, User.Identity.Name);			
+		}
+	}
+
+
 
 	async Task DeleteEventAsync() {
 		try {

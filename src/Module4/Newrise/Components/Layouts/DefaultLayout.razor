@@ -14,9 +14,10 @@
 		<MudSpacer />
 		<AuthorizeView>
 			<Authorized>
-				<MudText Color=Color.Inherit>
+				<MudLink Color=Color.Inherit
+					Href="/profile">
 					@context.User.Identity.Name
-				</MudText>
+				</MudLink>
 			</Authorized>
 			<NotAuthorized>
 				<MudLink Color=Color.Inherit Href="/login">Login</MudLink>
