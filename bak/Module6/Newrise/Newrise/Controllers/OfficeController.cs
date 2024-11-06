@@ -11,6 +11,7 @@ namespace Newrise.Controllers {
 			_officeListProvider = officeListProvider;
 		}
 
+		[HttpGet]
 		public ApiResult<List<Office>> GetList() {
 			try {
 				var offices = _officeListProvider.GetList();

@@ -8,13 +8,23 @@ namespace Newrise.Services {
 	public class ParticipantDataService {
 		readonly IDbContextFactory<NewriseDbContext> _dcFactory;
 		readonly ServerAuthenticationStateProvider _authenticationStateProvider;
+
 		public ParticipantDataService(
 			IDbContextFactory<NewriseDbContext> dcFactory,
 			AuthenticationStateProvider authenticationStateProvider) {
 			_dcFactory = dcFactory;
 			_authenticationStateProvider =
-				(ServerAuthenticationStateProvider)
-				authenticationStateProvider;
+				(ServerAuthenticationStateProvider)authenticationStateProvider;
+		}
+
+		public async Task UpdatePhotoAsync(string id, byte[] photo) {
+			using (var dc = await _dcFactory.CreateDbContextAsync()) {
+				var participant = await dc.Participants.FindAsync(id);
+				if (participant != null) {
+					participant.Photo = photo;
+					await dc.SaveChangesAsync();
+				}
+			}
 		}
 
 		const string PASSWORD_SALT = "$_{0}@newrise.921";
@@ -24,6 +34,25 @@ namespace Newrise.Services {
 			password = string.Format(PASSWORD_SALT, password);
 			var hashedPassword = ha.ComputeHash(Encoding.UTF8.GetBytes(password));
 			return Convert.ToBase64String(hashedPassword);
+		}
+
+		public async Task SignInAsync(string userId, string password) {
+			var hashedPassword = HashPassword(password);
+			using (var dc = await _dcFactory.CreateDbContextAsync()) {
+				var user = dc.Participants.FirstOrDefault(p =>
+					(p.Id == userId || p.Email == userId) && p.PasswordHash == hashedPassword);
+				if (user == null) throw new Exception("Invalid user ID or password");
+				var userSession = new UserSession {
+					UserId = user.Id,
+					IsAdmin = user.IsAdmin
+				};
+				await _authenticationStateProvider.
+					UpdateAuthenticationStateAsync(userSession);
+			}
+		}
+		public async Task SignOutAsync() {
+			await _authenticationStateProvider
+				.UpdateAuthenticationStateAsync(null);
 		}
 
 		public async Task InitializeAsync() {
@@ -44,43 +73,44 @@ namespace Newrise.Services {
 			}
 		}
 
-		public async Task SignInAsync(string userId, string password) {
-			var hashedPassword = HashPassword(password);
+		public async Task<Participant> GetParticipantAsync(string id) {
 			using (var dc = await _dcFactory.CreateDbContextAsync()) {
-				var user = dc.Participants.FirstOrDefault(p => (
-					p.Id == userId || p.Email == userId) && p.PasswordHash == hashedPassword);
-				if (user == null) throw new Exception("Invalid user Id or password.");
-				var userSession = new UserSession { UserId = user.Id, IsAdmin = user.IsAdmin };
-				await _authenticationStateProvider.UpdateAuthenticationStateAsync(userSession);
+				return await dc.Participants.FirstOrDefaultAsync(
+					p => p.Id == id || p.Email == id);
 			}
 		}
 
-		public async Task<Participant> GetParticipantAsync(string id) {
-			using (var dc = await _dcFactory.CreateDbContextAsync())
-				return dc.Participants.FirstOrDefault(p => p.Id == id || p.Email == id);
+		public async Task<Participant> GetParticipantWithEventsAsync(string id) {
+			using (var dc = await _dcFactory.CreateDbContextAsync()) {
+				return await dc.Participants.Include(p=>p.Events).FirstOrDefaultAsync(
+					p => p.Id == id || p.Email == id);
+			}
 		}
+
 		public async Task<Participant> GetCurrentParticipantAsync() {
 			var state = await _authenticationStateProvider.GetAuthenticationStateAsync();
-			if (state != null) return await GetParticipantAsync(state.User.Identity.Name);
+			if (state != null) return await GetParticipantAsync(
+				state.User.Identity.Name);
 			return null;
 		}
-		public async Task SignOutAsync() {
-			await _authenticationStateProvider.UpdateAuthenticationStateAsync(null);
+
+		public async Task<Participant> GetCurrentParticipantWithEventsAsync() {
+			var state = await _authenticationStateProvider.GetAuthenticationStateAsync();
+			if (state != null) return await GetParticipantWithEventsAsync(
+				state.User.Identity.Name);
+			return null;
 		}
 
 		public async Task AddParticipantAsync(NewParticipant participant) {
 			using (var dc = await _dcFactory.CreateDbContextAsync()) {
-				if (await dc.Participants.FirstOrDefaultAsync(
-				p => p.Id == participant.Id) != null)
+				if (await dc.Participants.FirstOrDefaultAsync(p => p.Id == participant.Id) != null)
 					throw new Exception("User ID already taken. Use another ID.");
-				if (await dc.Participants.FirstOrDefaultAsync(
-					p => p.Email == participant.Email) != null)
+				if (await dc.Participants.FirstOrDefaultAsync(p => p.Email == participant.Email) != null)
 					throw new Exception("Email already registered. Use another email.");
 				participant.PasswordHash = HashPassword(participant.Password);
-				dc.Participants.Add(participant);
-				dc.SaveChanges();
+				await dc.Participants.AddAsync(participant);
+				await dc.SaveChangesAsync();
 			}
 		}
-
 	}
 }
