@@ -1,0 +1,71 @@
+﻿@page "/profile"
+@attribute [Authorize]
+@inject EventDataService EventDataService
+@inject ParticipantDataService ParticipantDataService
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+@if (Item != null) {
+	<MudGrid>
+		<MudItem xs=12 md=6>
+			<UserDetails Item=Item OnSaveImage=SaveImageAsync OnLogout=LogoutAsync />
+		</MudItem>
+		<MudItem xs=12 md=6>
+			<ProfileImageUpload OnSaveImage=SaveImageAsync />
+		</MudItem>
+		<MudItem xs=12>
+			<MudExpansionPanels>
+				<MudExpansionPanel>
+					<TitleContent>
+						<MudText Typo=Typo.h5>Events</MudText>
+					</TitleContent>
+					<ChildContent>
+						<EventList Items=Item.Events OnLeaveEvent=LeaveEventAsync />
+					</ChildContent>
+				</MudExpansionPanel>
+			</MudExpansionPanels>
+		</MudItem>
+	</MudGrid>
+}
+@code {
+	async void SaveImageAsync(byte[] image) {
+		try
+		{
+			await ParticipantDataService.UpdatePhotoAsync(Item.Id, image);
+			Item = await ParticipantDataService.GetParticipantWithEventsAsync(Item.Id);
+			Snackbar.Add("Profile image updated.", Severity.Success);
+			StateHasChanged();
+		}
+		catch(Exception) {
+			Snackbar.Add("Profile image updated.", Severity.Error);
+		}
+
+	}
+
+	Participant Item { get; set; }
+
+	async void LogoutAsync() {
+		await ParticipantDataService.SignOutAsync();
+		NavigationManager.NavigateTo("/");
+	}
+
+	async void LeaveEventAsync(Event eventItem) {
+		try {
+			var result = await DialogService.ShowMessageBox(
+				"Warning", $"Leave event '{eventItem.Id}'?");
+			if (result != true) return;
+			await EventDataService.RemoveParticipantAsync(eventItem.Id, Item.Id);
+			Item = await ParticipantDataService.GetParticipantWithEventsAsync(Item.Id);
+			StateHasChanged();
+		}
+		catch {
+			Snackbar.Add($"Error leaving event '{eventItem.Id}'.",
+				Severity.Error);
+		}
+	}
+
+	protected override async Task OnInitializedAsync() {
+		Item = await ParticipantDataService.GetCurrentParticipantWithEventsAsync();
+	}
+}

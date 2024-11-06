@@ -1,0 +1,76 @@
+﻿@page "/register"
+@inject ParticipantDataService ParticipantDataService
+@inject NavigationManager NavigationManager
+
+@if (IsSubmitting) {
+<MudAlert Severity="Severity.Info">
+	Attempting to register account. Please wait...
+</MudAlert>
+}
+else {
+<EditForm Model=Item OnValidSubmit=HandleSubmitAsync
+	OnInvalidSubmit=@(()=>Error = "Invalid form data.")>
+	<DataAnnotationsValidator />
+	<MudCard Class="pa-8 ma-2">
+		<MudCardContent>
+			<MudText Typo="Typo.h5">Register Account</MudText><br />
+			<MudTextField Label="USER ID *" @ref=IdField @bind-Value=Item.Id
+				For=@(()=>Item.Id) MaxLength="40" AutoFocus />
+			<MudStack Row="true">
+				<MudTextField Label="USER NAME *" @bind-Value=Item.Name
+							  For=@(()=>Item.Name) MaxLength="40" />
+				<MudTextField Label="EMAIL *" @bind-Value=Item.Email
+							  For=@(()=>Item.Email) MaxLength="40" />
+			</MudStack><br />
+			<MudStack Row="true">
+				<MudTextField Label="COMPANY" @bind-Value=Item.Company
+							  For=@(()=>Item.Company) MaxLength="40" />
+				<MudTextField Label="POSITION" @bind-Value=Item.Position
+							  For=@(()=>Item.Position) MaxLength="40" />
+			</MudStack><br />
+			<MudStack Row="true">
+				<MudTextField Label="PASSWORD" @bind-Value=Item.Password
+							  InputType=@InputType.Password For=@(()=>Item.Password) MaxLength="8" />
+				<MudTextField Label="CONFIRM PASSWORD" @bind-Value=Item.ConfirmPassword
+							  InputType=@InputType.Password MaxLength="8"
+							  For=@(()=>Item.ConfirmPassword) />
+			</MudStack><br />
+			@if (Error != string.Empty) {
+				<MudAlert Severity="Severity.Error">@Error</MudAlert>
+				<br />
+			}
+			</MudCardContent>
+		<MudCardActions>
+				<MudButton Color=Color.Primary Variant=Variant.Filled
+						   ButtonType=ButtonType.Submit>SAVE</MudButton>
+				<MudButton Class="ml-2" Color="Color.Secondary" Variant="Variant.Filled"
+					   Href="/">CANCEL</MudButton>
+		</MudCardActions>
+	</MudCard>
+</EditForm>
+}
+
+
+@code {
+	bool IsSubmitting { get; set; }
+	NewParticipant Item { get; set; } = new NewParticipant {
+		PasswordHash = ParticipantDataService.HashPassword("P@ssw0rd")
+	};
+	string Error { get; set; } = string.Empty;
+	MudTextField<string> IdField { get; set; }
+
+	async void HandleSubmitAsync() {
+		try {
+			IsSubmitting = true;
+			Error = string.Empty;
+			await ParticipantDataService.AddParticipantAsync(Item);
+			NavigationManager.NavigateTo("/login");
+		}
+		catch (Exception ex) {
+			Error = $"{ex.Message} Registration failed.";
+			IsSubmitting = false;
+			IdField?.FocusAsync();
+			StateHasChanged();
+		}
+	}
+}

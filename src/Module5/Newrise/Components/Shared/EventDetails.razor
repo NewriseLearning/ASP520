@@ -1,0 +1,152 @@
+﻿@using System.Security.Claims
+@inject EventDataService EventDataService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
+<MudDialog>
+	<TitleContent>
+		<MudText Typo=Typo.h5>Event Details</MudText>
+		<MudDivider />
+	</TitleContent>
+	<DialogContent>
+		<MudStack Row=true>
+			<MudSpacer />
+			@if (Event.Online) {
+				<MudChip T=string Color=Color.Info>ONLINE</MudChip>
+			}
+			@if (Event.RemainingSeats == 0) {
+				<MudChip T=string Color=Color.Info>FULL</MudChip>
+			}
+			@if (IsParticipating) {
+				<MudChip T=string Color=Color.Secondary>
+					PARTICIPATING
+				</MudChip>
+			}
+		</MudStack>
+		<MudStack Row=true>
+			<MudTextField Label="ID" Value=Event.Id ReadOnly />
+			<MudTextField FullWidth Label="TITLE" Value=Event.Title ReadOnly />
+		</MudStack><br />
+		<MudStack Row=@true>
+			<MudTextField Label="TYPE" Value=Event.Type ReadOnly />
+			<MudTextField Label="FROM" Value=Event.From ReadOnly />
+			<MudTextField Label="HOURS" Value=Event.Hours ReadOnly />
+		</MudStack><br />
+		@if (!string.IsNullOrEmpty(Event.Description)) {
+			<MudTextField Label="DESCRIPTION" Value=Event.Description Lines=5 ReadOnly />
+			<br />
+		}
+		<MudStack Row=@true>
+			<MudTextField Label="SEATS" Value=Event.Seats ReadOnly />
+			<MudTextField Label="ALLOCATED SEATS" Value=Event.AllocatedSeats ReadOnly />
+			<MudTextField Label="REMAINING SEATS" Value=Event.RemainingSeats ReadOnly />
+		</MudStack><br />
+		@if (Event.Fee != 0) {
+			<MudTextField Label="FEE"
+				Value=Event.Fee ReadOnly />
+			<br />
+		}
+	</DialogContent>
+	<DialogActions>
+	@if (IsProcessing) {
+		<MudAlert Severity=Severity.Info>
+			Updating event. Please wait.
+			</MudAlert>
+		}
+		else {
+			<AuthorizeView>
+				@if (IsParticipating) {
+					<MudButton Color=Color.Primary Variant=Variant.Filled
+						OnClick=LeaveEventAsync>LEAVE EVENT</MudButton>
+				}
+				else {
+					<MudButton Color=Color.Primary Variant=Variant.Filled
+					   OnClick=ParticipateEventAsync>PARTICIPATE EVENT</MudButton>
+				}
+			</AuthorizeView>
+			<AuthorizeView Roles="admin">
+				<MudSpacer />
+				<MudButton Color=Color.Error Variant=Variant.Filled
+					OnClick=DeleteEventAsync>DELETE</MudButton>
+			</AuthorizeView>
+		}
+	</DialogActions>
+</MudDialog>
+
+@code {
+
+	ClaimsPrincipal User { get; set; }
+	bool IsParticipating { get; set; }
+
+	async Task ParticipateEventAsync() {
+		try {
+			IsProcessing = true;
+			await EventDataService.AddParticipantAsync(Event.Id, User.Identity.Name);
+			Snackbar.Add($"Participation in event '{Event.Id}' confirmed.", Severity.Success);
+			Event = await EventDataService.GetEventAsync(Event.Id);
+			IsParticipating = true; EventUpdated?.Invoke(Event);
+		}
+		catch (Exception ex) { Snackbar.Add(ex.Message, Severity.Error); }
+		finally {
+			IsProcessing = false;
+			//	MudDialog.Close();
+		}
+	}
+
+	async Task LeaveEventAsync() {
+		try {
+			IsProcessing = true;
+			await EventDataService.RemoveParticipantAsync(Event.Id, User.Identity.Name);
+			Snackbar.Add($"Your '{Event.Id}' event participation is cancelled.", Severity.Success);
+			Event = await EventDataService.GetEventAsync(Event.Id);
+			IsParticipating = false; EventUpdated?.Invoke(Event);
+		}
+		catch (Exception ex) { Snackbar.Add(ex.Message, Severity.Error); }
+		finally {
+			IsProcessing = false;
+			//	MudDialog.Close();
+		}
+	}
+	protected override async Task OnInitializedAsync() {
+		var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		if (state != null) User = state.User;
+	}
+
+	bool IsProcessing { get; set; }
+
+	[Parameter]
+	public Action<Event> EventDeleted { get; set; }
+
+	[Parameter]
+	public Action<Event> EventUpdated { get; set; }
+
+	[CascadingParameter]
+	public MudDialogInstance MudDialog { get; set; }
+
+	[Parameter]
+	public Event Event { get; set; }
+
+	protected override async Task OnParametersSetAsync() {
+		if (User != null && Event != null) {
+			IsParticipating = await EventDataService
+				.HasParticipantAsync(Event.Id, User.Identity.Name);			
+		}
+	}
+
+
+
+	async Task DeleteEventAsync() {
+		try {
+			IsProcessing = true;
+			await EventDataService.RemoveEventAsync(Event.Id);
+			Snackbar.Add($"Event '{Event.Id}' deleted.", Severity.Success);
+			EventDeleted?.Invoke(Event);
+		}
+		catch (Exception ex) {
+			Snackbar.Add($"Cannot delete event '{Event.Id}. {ex.Message}.", Severity.Error);
+		}
+		finally {
+		//	IsProcessing = false;
+			MudDialog.Close();	
+		}
+	}
+}

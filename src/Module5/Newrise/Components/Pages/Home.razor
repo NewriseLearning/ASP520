@@ -1,0 +1,24 @@
+﻿@page "/"
+@page "/home"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>@Program.AppName</PageTitle>
+<h3>Home</h3>
+<h1>Welcome to Blazor</h1>
+@code {
+	[CascadingParameter]
+	public AuthenticationState authencationState { get; set; }
+
+	bool isAuthenticated;
+	bool isAdmin;
+	string userName;
+
+	protected override async Task OnInitializedAsync() {
+		var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		isAuthenticated = state.User.Identity.IsAuthenticated;
+		if (isAuthenticated) {
+			isAdmin = state.User.IsInRole("admin");
+			userName = state.User.Identity.Name;
+		}
+	}
+}

@@ -1,0 +1,57 @@
+﻿<MudCard>
+	<MudCardHeader>
+		<CardHeaderAvatar>
+			@if (Item.Photo == null)
+			{
+				<MudAvatar Color=Color.Secondary Size=Size.Large>
+					<span>@Item.Id.Substring(0, 1)</span>
+				</MudAvatar>
+			}
+			else {
+				<MudMenu>
+					<ActivatorContent>
+						<MudAvatar Color=Color.Secondary Size=Size.Large>
+							<MudImage Src=@ImageText />
+						</MudAvatar>
+					</ActivatorContent>
+					<ChildContent>
+						<MudMenuItem OnClick=@(()=>OnSaveImage?.Invoke(null))>Clear Image</MudMenuItem>
+					</ChildContent>
+				</MudMenu>
+			}
+
+		</CardHeaderAvatar>
+		<CardHeaderContent>
+			<MudText Typo="Typo.body1">@Item.Id</MudText>
+			<MudText Typo="Typo.body2">@Item.Name</MudText>
+		</CardHeaderContent>
+	</MudCardHeader>
+	<MudCardContent>
+		<MudTextField Label="COMPANY" ReadOnly=true Value=@Item.Company />
+		<MudTextField Label="POSITION" ReadOnly=true Value=@Item.Position />
+		<MudTextField Label="EMAIL" ReadOnly=true Value=@Item.Email />
+	</MudCardContent>
+	<MudCardActions>
+		<MudSpacer />
+		<MudButton Color=@Color.Secondary Variant=Variant.Filled
+				   OnClick=OnLogout>LOGOUT</MudButton>
+		<MudSpacer />
+	</MudCardActions>
+</MudCard>
+@code {
+	[Parameter]
+	public Participant Item { get; set; }
+
+	[Parameter]
+	public Action<byte[]> OnSaveImage { get; set; }
+
+	string ImageText {
+		get {
+			var text = Convert.ToBase64String(Item.Photo);
+			return $"data:image/png;base64, {text}";
+		}
+	}
+
+	[Parameter]
+	public EventCallback<MouseEventArgs> OnLogout { get; set; }
+}
