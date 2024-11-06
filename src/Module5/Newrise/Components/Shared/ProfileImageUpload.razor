@@ -1,0 +1,91 @@
+﻿<MudCard>
+	<MudCardContent>
+		@if (ImageFile != null) {
+			<MudMenu PositionAtCursor>
+				<ActivatorContent>
+					<MudImage Height=640 Fluid Src=@ImageText />
+				</ActivatorContent>
+				<ChildContent>
+					<MudMenuItem OnClick=ClearImage>Clear Image</MudMenuItem>
+				</ChildContent>
+			</MudMenu>
+		}
+		else {
+			<MudSkeleton SkeletonType=SkeletonType.Rectangle
+				Height="220px" />
+		}
+		@if (Error != string.Empty) {
+			<br /><MudAlert Severity=Severity.Error>@Error</MudAlert>
+		}
+
+	</MudCardContent>
+	<MudCardActions>
+		<MudStack Row=true>
+			<MudFileUpload @ref=Uploader T=IBrowserFile FilesChanged=UploadFileAsync>
+				<ActivatorContent>
+					<MudButton Variant=Variant.Filled
+							   Color=Color.Primary>
+						SELECT PROFILE IMAGE
+					</MudButton>
+				</ActivatorContent>
+			</MudFileUpload>
+			@if (ImageFile != null)
+			{
+				<MudButton Variant=Variant.Filled
+				Color=Color.Primary
+				OnClick=SaveImage>
+					SAVE IMAGE
+				</MudButton>
+			}
+		</MudStack>
+	</MudCardActions>
+</MudCard>
+
+@code {
+	MudFileUpload<IBrowserFile> Uploader;
+
+	[Parameter]
+	public Action<byte[]> OnSaveImage { get; set; }
+
+	IBrowserFile ImageFile { get; set; }
+	string ImageText { get; set; }
+	byte[] ImageData { get; set; }
+
+	string Error { get; set; } = string.Empty;
+
+	async void UploadFileAsync(IBrowserFile file)
+	{
+		try
+		{
+			if (file == null) return;
+			Error = string.Empty;
+			if (file.Size > 1000000) throw new Exception("File size must not exceed 1MB");
+			if (file.ContentType != "image/png") throw new Exception("File must be an PNG image.");
+			ImageFile = await file.RequestImageFileAsync("image/png", 640, 640);
+			var buffer = new MemoryStream();
+			await ImageFile.OpenReadStream().CopyToAsync(buffer);
+			ImageData = buffer.ToArray(); buffer.Close();
+			ImageText = $"data:image/png;base64, {Convert.ToBase64String(ImageData)}";
+			await Uploader.ClearAsync();
+		}
+		catch (Exception ex) {
+			Error = $"Upload failed. {ex.Message}";
+		}
+		finally {
+			StateHasChanged();
+		}
+	}
+
+	void ClearImage() {
+		ImageText = null;
+		ImageData = null;
+		ImageFile = null;
+	}
+
+	void SaveImage() {
+		OnSaveImage?.Invoke(ImageData);
+		ClearImage();
+	}
+}
+
+

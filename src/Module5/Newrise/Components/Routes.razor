@@ -1,0 +1,11 @@
+﻿<Router AppAssembly="typeof(App).Assembly" Context="routeData">
+	<Found>
+		<AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(DefaultLayout)">
+			<NotAuthorized>
+				<MudAlert Severity=@Severity.Error>
+					Access denied. Sorry, you are not authorized to access this page.
+				</MudAlert>
+			</NotAuthorized>
+		</AuthorizeRouteView>
+	</Found>
+</Router>

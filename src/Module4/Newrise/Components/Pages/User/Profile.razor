@@ -1,0 +1,41 @@
+﻿@page "/profile"
+@attribute [Authorize]
+@inject ParticipantDataService ParticipantDataService
+@inject NavigationManager NavigationManager
+
+@if (Item != null) {
+	<MudCard>
+		<MudCardHeader>
+			<CardHeaderAvatar>
+				<MudAvatar Color="Color.Secondary">@Item.Id.Substring(0, 1)</MudAvatar>
+			</CardHeaderAvatar>
+			<CardHeaderContent>
+				<MudText Typo="Typo.body1">@Item.Id</MudText>
+				<MudText Typo="Typo.body2">@Item.Name</MudText>
+			</CardHeaderContent>
+		</MudCardHeader>
+		<MudCardContent>
+			<MudTextField Label="COMPANY" ReadOnly=true Value=@Item.Company />
+			<MudTextField Label="POSITION" ReadOnly=true Value=@Item.Position />
+			<MudTextField Label="EMAIL" ReadOnly=true Value=@Item.Email />
+		</MudCardContent>
+		<MudCardActions>
+			<MudSpacer />
+			<MudButton Color=@Color.Secondary Variant=Variant.Filled
+				OnClick=@LogoutAsync>LOGOUT</MudButton>
+			<MudSpacer />
+		</MudCardActions>
+	</MudCard>
+}
+@code {
+	Participant Item { get; set; }
+
+	async void LogoutAsync() {
+		await ParticipantDataService.SignOutAsync();
+		NavigationManager.NavigateTo("/");
+	}
+
+	protected override async Task OnInitializedAsync() {
+		Item = await ParticipantDataService.GetCurrentParticipantAsync();
+	}
+}
