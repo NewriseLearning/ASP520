@@ -5,6 +5,9 @@ namespace Newrise.Shared.Models {
 	public class UserSession {
 		public string UserId { get; set; }
 		public bool IsAdmin { get; set; }
+		public string Token { get; set; }
+		public TimeSpan ExpiresIn { get; set; }
+		public DateTime ExpiresAt { get; set; }
 
 		public const string AuthenticationType = "NewriseAuthentication";
 

@@ -7,24 +7,13 @@ using System.Text;
 namespace Newrise.Services {
 	public class ParticipantDataService {
 		readonly IDbContextFactory<NewriseDbContext> _dcFactory;
-		readonly ServerAuthenticationStateProvider _authenticationStateProvider;
+		readonly ILogger<ParticipantDataService> _logger;
 
 		public ParticipantDataService(
 			IDbContextFactory<NewriseDbContext> dcFactory,
-			AuthenticationStateProvider authenticationStateProvider) {
+			ILogger<ParticipantDataService> logger) {
 			_dcFactory = dcFactory;
-			_authenticationStateProvider =
-				(ServerAuthenticationStateProvider)authenticationStateProvider;
-		}
-
-		public async Task UpdatePhotoAsync(string id, byte[] photo) {
-			using (var dc = await _dcFactory.CreateDbContextAsync()) {
-				var participant = await dc.Participants.FindAsync(id);
-				if (participant != null) {
-					participant.Photo = photo;
-					await dc.SaveChangesAsync();
-				}
-			}
+			_logger = logger;
 		}
 
 		const string PASSWORD_SALT = "$_{0}@newrise.921";
@@ -34,25 +23,6 @@ namespace Newrise.Services {
 			password = string.Format(PASSWORD_SALT, password);
 			var hashedPassword = ha.ComputeHash(Encoding.UTF8.GetBytes(password));
 			return Convert.ToBase64String(hashedPassword);
-		}
-
-		public async Task SignInAsync(string userId, string password) {
-			var hashedPassword = HashPassword(password);
-			using (var dc = await _dcFactory.CreateDbContextAsync()) {
-				var user = dc.Participants.FirstOrDefault(p =>
-					(p.Id == userId || p.Email == userId) && p.PasswordHash == hashedPassword);
-				if (user == null) throw new Exception("Invalid user ID or password");
-				var userSession = new UserSession {
-					UserId = user.Id,
-					IsAdmin = user.IsAdmin
-				};
-				await _authenticationStateProvider.
-					UpdateAuthenticationStateAsync(userSession);
-			}
-		}
-		public async Task SignOutAsync() {
-			await _authenticationStateProvider
-				.UpdateAuthenticationStateAsync(null);
 		}
 
 		public async Task InitializeAsync() {
@@ -73,32 +43,18 @@ namespace Newrise.Services {
 			}
 		}
 
-		public async Task<Participant> GetParticipantAsync(string id) {
+		public async Task<UserSession> SignInAsync(string userId, string password) {
+			var hashedPassword = HashPassword(password);
 			using (var dc = await _dcFactory.CreateDbContextAsync()) {
-				return await dc.Participants.FirstOrDefaultAsync(
-					p => p.Id == id || p.Email == id);
+				var user = dc.Participants.FirstOrDefault(p =>
+					(p.Id == userId || p.Email == userId) && p.PasswordHash == hashedPassword);
+				if (user == null) throw new Exception("Invalid user ID or password");
+				var userSession = new UserSession {
+					UserId = user.Id,
+					IsAdmin = user.IsAdmin
+				};
+				return userSession;
 			}
-		}
-
-		public async Task<Participant> GetParticipantWithEventsAsync(string id) {
-			using (var dc = await _dcFactory.CreateDbContextAsync()) {
-				return await dc.Participants.Include(p=>p.Events).FirstOrDefaultAsync(
-					p => p.Id == id || p.Email == id);
-			}
-		}
-
-		public async Task<Participant> GetCurrentParticipantAsync() {
-			var state = await _authenticationStateProvider.GetAuthenticationStateAsync();
-			if (state != null) return await GetParticipantAsync(
-				state.User.Identity.Name);
-			return null;
-		}
-
-		public async Task<Participant> GetCurrentParticipantWithEventsAsync() {
-			var state = await _authenticationStateProvider.GetAuthenticationStateAsync();
-			if (state != null) return await GetParticipantWithEventsAsync(
-				state.User.Identity.Name);
-			return null;
 		}
 
 		public async Task AddParticipantAsync(NewParticipant participant) {
@@ -110,6 +66,31 @@ namespace Newrise.Services {
 				participant.PasswordHash = HashPassword(participant.Password);
 				await dc.Participants.AddAsync(participant);
 				await dc.SaveChangesAsync();
+			}
+		}
+
+		public async Task UpdatePhotoAsync(string id, byte[] photo) {
+			using (var dc = await _dcFactory.CreateDbContextAsync()) {
+				var participant = await dc.Participants.FindAsync(id);
+				if (participant != null) {
+					participant.Photo = photo;
+					await dc.SaveChangesAsync();
+				}
+			}
+		}
+
+
+		public async Task<Participant> GetParticipantAsync(string id) {
+			using (var dc = await _dcFactory.CreateDbContextAsync()) {
+				return await dc.Participants.FirstOrDefaultAsync(
+					p => p.Id == id || p.Email == id);
+			}
+		}
+
+		public async Task<Participant> GetParticipantWithEventsAsync(string id) {
+			using (var dc = await _dcFactory.CreateDbContextAsync()) {
+				return await dc.Participants.Include(p=>p.Events).FirstOrDefaultAsync(
+					p => p.Id == id || p.Email == id);
 			}
 		}
 	}
